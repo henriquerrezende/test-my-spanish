@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<questions>
+    <question title="Dog?"   answerId="1" />
+    <question title="Cat?"   answerId="2" />
+    <question title="Mouse?" answerId="3" />
+</questions>
