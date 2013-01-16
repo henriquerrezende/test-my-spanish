@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class QuestionActivity extends Activity {
@@ -12,12 +14,24 @@ public class QuestionActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 
 	    // Create the text view
-	    TextView textView = new TextView(this);
-	    textView.setTextSize(40);
+	    TextView textView = (TextView) findViewById(R.id.question);
 	    textView.setText("Generate question here");
 
-	    // Set the text view as the activity layout
-	    setContentView(textView);
+	    RadioGroup radioGroup = (RadioGroup) findViewById(R.id.answer_option_group);
+//	    OnClickListener radio_listener = new OnClickListener() {
+//	        public void onClick(View v) {
+//	            onRadioButtonClick(v);
+//	        }
+//	    };
+
+	    for (int i = 1; i < 4; i++) {
+	    	RadioButton button = new RadioButton(this);
+		    button.setText("ANSWER_" + i);
+//		    button1.setOnClickListener(radio_listener);
+		    radioGroup.addView(button);
+	    }
+
+	    setContentView(R.layout.question_layout);
 	}
 
     @Override
