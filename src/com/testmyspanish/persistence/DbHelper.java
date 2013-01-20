@@ -1,11 +1,9 @@
-package com.testmyspanish;
+package com.testmyspanish.persistence;
 
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import com.testmyspanish.FeedReaderContract.*;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +11,11 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.*;
+import android.util.Log;
+
+import com.testmyspanish.R;
+import com.testmyspanish.persistence.FeedReaderContract.FeedAnswer;
+import com.testmyspanish.persistence.FeedReaderContract.FeedQuestion;
 
 public class DbHelper extends SQLiteOpenHelper {
 	
@@ -26,13 +28,13 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_QUESTIONS =
 	    "CREATE TABLE " + FeedReaderContract.FeedQuestion.TABLE_NAME + " (" +
 	    FeedReaderContract.FeedQuestion._ID + " INTEGER PRIMARY KEY," +
-	    FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+	    FeedReaderContract.FeedQuestion.COLUMN_NAME_QUESTION + TEXT_TYPE + COMMA_SEP +
 	    FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID + " INTEGER)";
 
 	private static final String SQL_CREATE_ANSWERS =
 		"CREATE TABLE " + FeedReaderContract.FeedAnswer.TABLE_NAME + " (" +
 		FeedReaderContract.FeedAnswer._ID + " INTEGER PRIMARY KEY," +
-		FeedReaderContract.FeedAnswer.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+		FeedReaderContract.FeedAnswer.COLUMN_NAME_ANSWER + TEXT_TYPE + COMMA_SEP +
 		FeedReaderContract.FeedAnswer.COLUMN_NAME_QUESTION_ID + " INTEGER)";
 
     // If you change the database schema, you must increment the database version.
@@ -69,9 +71,9 @@ public class DbHelper extends SQLiteOpenHelper {
             int eventType = xml.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("answer"))){
-                    String title = xml.getAttributeValue(null, FeedAnswer.COLUMN_NAME_TITLE);
+                    String answer = xml.getAttributeValue(null, FeedAnswer.COLUMN_NAME_ANSWER);
                     String questionId = xml.getAttributeValue(null, FeedAnswer.COLUMN_NAME_QUESTION_ID);
-                    values.put(FeedAnswer.COLUMN_NAME_TITLE, title);
+                    values.put(FeedAnswer.COLUMN_NAME_ANSWER, answer);
                     values.put(FeedAnswer.COLUMN_NAME_QUESTION_ID, questionId);
                     db.insert(FeedAnswer.TABLE_NAME, null, values); 
                 }
@@ -103,9 +105,9 @@ public class DbHelper extends SQLiteOpenHelper {
             int eventType = xml.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("question"))){
-                    String title = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_TITLE);
-                    String correctAnswerId = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID);
-                    values.put(FeedQuestion.COLUMN_NAME_TITLE, title);
+                	String question = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_QUESTION);
+                	String correctAnswerId = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID);
+                    values.put(FeedQuestion.COLUMN_NAME_QUESTION, question);
                     values.put(FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID, correctAnswerId);
                     db.insert(FeedQuestion.TABLE_NAME, null, values); 
                 }

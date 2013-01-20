@@ -1,4 +1,4 @@
-package com.testmyspanish;
+package com.testmyspanish.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,11 +6,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.testmyspanish.R;
+import com.testmyspanish.persistence.DbHelper;
+
 public class MainActivity extends Activity {
+	
+	public static DbHelper DB_HELPER;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		DB_HELPER = new DbHelper(this);
 		setContentView(R.layout.activity_main);
 	}
 
