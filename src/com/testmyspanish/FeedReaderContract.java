@@ -10,7 +10,13 @@ public class FeedReaderContract {
 		public static final String TABLE_NAME = "question";
 		public static final String _ID = "questionId";
 		public static final String COLUMN_NAME_TITLE = "title";
-		public static final String COLUMN_NAME_ANSWER_ID = "answerId";
-		public static final String COLUMN_NAME_NULLABLE = "null";
-	}    
+		public static final String COLUMN_NAME_CORRECT_ANSWER_ID = "correctAnswerId";
+	}   
+	
+	public static abstract class FeedAnswer implements BaseColumns {
+		public static final String TABLE_NAME = "answer";
+		public static final String _ID = "answerId";
+		public static final String COLUMN_NAME_TITLE = "title";
+		public static final String COLUMN_NAME_QUESTION_ID = "questionId";
+	} 
 }

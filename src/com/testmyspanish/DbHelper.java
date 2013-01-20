@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.testmyspanish.FeedReaderContract.FeedQuestion;
+import com.testmyspanish.FeedReaderContract.*;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,32 +15,37 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.*;
 
-public class FeedQuestionDbHelper extends SQLiteOpenHelper {
+public class DbHelper extends SQLiteOpenHelper {
 	
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = ",";
-	private static final String TAG = "FeedQuestionDbHelper";
+	private static final String TAG = "DbHelper";
 	
 	private final Context fContext;
 
-	private static final String SQL_CREATE_ENTRIES =
+	private static final String SQL_CREATE_QUESTIONS =
 	    "CREATE TABLE " + FeedReaderContract.FeedQuestion.TABLE_NAME + " (" +
 	    FeedReaderContract.FeedQuestion._ID + " INTEGER PRIMARY KEY," +
 	    FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-	    FeedReaderContract.FeedQuestion.COLUMN_NAME_ANSWER_ID + " INTEGER)";
-	
+	    FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID + " INTEGER)";
+
+	private static final String SQL_CREATE_ANSWERS =
+		"CREATE TABLE " + FeedReaderContract.FeedAnswer.TABLE_NAME + " (" +
+		FeedReaderContract.FeedAnswer._ID + " INTEGER PRIMARY KEY," +
+		FeedReaderContract.FeedAnswer.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+		FeedReaderContract.FeedAnswer.COLUMN_NAME_QUESTION_ID + " INTEGER)";
+
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "FeedReader.db";
 
-    public FeedQuestionDbHelper(Context context) {
+    public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		fContext = context;
-		Log.d(TAG, "FeedQuestionDbHelper instantiated!");
     }
     public void onCreate(SQLiteDatabase db) {
-    	Log.d(TAG, "onCreate(");
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_QUESTIONS);
+        db.execSQL(SQL_CREATE_ANSWERS);
         populate(db);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -51,33 +56,28 @@ public class FeedQuestionDbHelper extends SQLiteOpenHelper {
     }
     
     private void populate(SQLiteDatabase db) {
-    	//Add default records to animals
-        ContentValues values = new ContentValues();                            
-        //Get xml resource file
+    	populateQuestions(db);
+    	populateAnswers(db);
+    }
+	private void populateAnswers(SQLiteDatabase db) {
+		ContentValues values = new ContentValues();                            
         Resources res = fContext.getResources();
          
-        //Open xml file
-        XmlResourceParser xml = res.getXml(R.xml.questions_records);
+        XmlResourceParser xml = res.getXml(R.xml.answers_records);
         try
         {
-            //Check for end of document
             int eventType = xml.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                //Search for record tags
-                if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("question"))){
-                    //Record tag found, now get values and insert record
-                    String title = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_TITLE);
-                    String color = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_ANSWER_ID);
-                    values.put(FeedQuestion.COLUMN_NAME_TITLE, title);
-                    values.put(FeedQuestion.COLUMN_NAME_ANSWER_ID, color);
-                    Log.d(TAG, "Going to insert in db");
-                    long result = db.insert(FeedQuestion.TABLE_NAME, null, values); 
-                    Log.d(TAG, "" + result);
+                if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("answer"))){
+                    String title = xml.getAttributeValue(null, FeedAnswer.COLUMN_NAME_TITLE);
+                    String questionId = xml.getAttributeValue(null, FeedAnswer.COLUMN_NAME_QUESTION_ID);
+                    values.put(FeedAnswer.COLUMN_NAME_TITLE, title);
+                    values.put(FeedAnswer.COLUMN_NAME_QUESTION_ID, questionId);
+                    db.insert(FeedAnswer.TABLE_NAME, null, values); 
                 }
                 eventType = xml.next();
             }
         }
-        //Catch errors
         catch (XmlPullParserException e)
         {       
             Log.e(TAG, e.getMessage(), e);
@@ -89,9 +89,42 @@ public class FeedQuestionDbHelper extends SQLiteOpenHelper {
         }           
         finally
         {           
-            //Close the xml file
             xml.close();
         }
-    }
+		
+	}
+	private void populateQuestions(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();                            
+        Resources res = fContext.getResources();
+         
+        XmlResourceParser xml = res.getXml(R.xml.questions_records);
+        try
+        {
+            int eventType = xml.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("question"))){
+                    String title = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_TITLE);
+                    String correctAnswerId = xml.getAttributeValue(null, FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID);
+                    values.put(FeedQuestion.COLUMN_NAME_TITLE, title);
+                    values.put(FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID, correctAnswerId);
+                    db.insert(FeedQuestion.TABLE_NAME, null, values); 
+                }
+                eventType = xml.next();
+            }
+        }
+        catch (XmlPullParserException e)
+        {       
+            Log.e(TAG, e.getMessage(), e);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+             
+        }           
+        finally
+        {           
+            xml.close();
+        }
+	}
 
 }

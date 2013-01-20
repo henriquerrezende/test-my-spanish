@@ -22,19 +22,20 @@ public class QuestionActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.question_layout);
 
-	    FeedQuestionDbHelper dbHelper = new FeedQuestionDbHelper(this);
+	    DbHelper dbHelper = new DbHelper(this);
 	    Question question= readFirstQuestion(dbHelper);
 
 	    // Create the text view
 	    TextView textView = (TextView) findViewById(R.id.question);
 	    textView.setText(question.getTitle());
 	    
-	    List<String> answer_options = new ArrayList<String>();
-	    answer_options.add("hello");
-	    answer_options.add("bye");
+	    List<String> answerOptions = new ArrayList<String>();
+	    
+	    answerOptions.add("hello");
+	    answerOptions.add("bye");
 	    
 	    RadioGroup answers_options_group = (RadioGroup) findViewById(R.id.answer_options_group);
-	    for(String answer_option : answer_options) {
+	    for(String answer_option : answerOptions) {
 	    	RadioButton answer_button = new RadioButton(this);
 	    	answer_button.setText(answer_option);
 	    	answer_button.setOnClickListener(answerButtonClickHandler);
@@ -62,7 +63,7 @@ public class QuestionActivity extends Activity {
 		}
 	};
 	
-    private Question readFirstQuestion(FeedQuestionDbHelper dbHelper) {
+    private Question readFirstQuestion(DbHelper dbHelper) {
     	
     	SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -71,7 +72,7 @@ public class QuestionActivity extends Activity {
     	String[] projection = {
     	    FeedReaderContract.FeedQuestion._ID,
     	    FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE,
-    	    FeedReaderContract.FeedQuestion.COLUMN_NAME_ANSWER_ID
+    	    FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID
     	    };
     	
     	Cursor cursor = db.query(
@@ -91,9 +92,10 @@ public class QuestionActivity extends Activity {
         	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE)
         	);
     	int itemAnswerId = cursor.getInt(
-        	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_ANSWER_ID)
+        	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID)
         	);
     	
-    	return new Question(itemTitle, itemAnswerId);
+    	List<Answer> emptyList = new ArrayList<Answer>();
+    	return new Question(itemTitle, itemAnswerId, emptyList);
     }
 }

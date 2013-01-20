@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<answers>
+    <answer title="Perro"   		questionId="1" />
+    <answer title="Gato"   			questionId="2" />
+    <answer title="Raton" 			questionId="3" />
+    <answer title="Elefante" 		questionId="1" />
+    <answer title="Ornitorrinco" 	questionId="2" />
+    <answer title="Gallina" 		questionId="3" />
+</answers>
