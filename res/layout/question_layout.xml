@@ -10,8 +10,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/start_test" />
     
-    <ListView 
-        android:id="@+id/listview"
+    <RadioGroup 
+        android:id="@+id/answer_options_group"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     

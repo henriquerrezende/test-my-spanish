@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.View.OnClickListener;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class QuestionActivity extends Activity {
@@ -23,23 +23,18 @@ public class QuestionActivity extends Activity {
 	    // Create the text view
 	    TextView textView = (TextView) findViewById(R.id.question);
 	    textView.setText("Generate question here");
-
-//	    OnClickListener radio_listener = new OnClickListener() {
-//	        public void onClick(View v) {
-//	            onRadioButtonClick(v);
-//	        }
-//	    };
 	    
-	    List<String> myStringArray = new ArrayList<String>();
-	    myStringArray.add("hello");
-	    myStringArray.add("bye");
-	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.radio_button_layout, R.id.answer_option_radio_button, myStringArray);
+	    List<String> answer_options = new ArrayList<String>();
+	    answer_options.add("hello");
+	    answer_options.add("bye");
 	    
-	    ListView listView = (ListView) findViewById(R.id.listview);
-	    listView.setAdapter(adapter);
-	    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-	    listView.setOnItemClickListener(mMessageClickedHandler); 
-
+	    RadioGroup answers_options_group = (RadioGroup) findViewById(R.id.answer_options_group);
+	    for(String answer_option : answer_options) {
+	    	RadioButton answer_button = new RadioButton(this);
+	    	answer_button.setText(answer_option);
+	    	answer_button.setOnClickListener(answerButtonClickHandler);
+	    	answers_options_group.addView(answer_button);
+	    }
 	}
 
     @Override
@@ -52,12 +47,13 @@ public class QuestionActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
     
- // Create a message handling object as an anonymous class.
-    private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
-        public void onItemClick(AdapterView parent, View v, int position, long id) {
-    	    TextView textView = (TextView) findViewById(R.id.question);
+    private OnClickListener answerButtonClickHandler = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			RadioButton answerButton = (RadioButton) v;
+			answerButton.setTextColor(Color.BLUE);
+			TextView textView = (TextView) findViewById(R.id.question);
     	    textView.setText("Question answered!");
-        }
-    };
-
+		}
+	};
 }
