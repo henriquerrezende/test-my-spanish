@@ -30,7 +30,7 @@ public class QuestionDAO {
     	    null,                            // The values for the WHERE clause
     	    null,                                     // don't group the rows
     	    null,                                     // don't filter by row groups
-    	    null,                                 // The sort order
+    	    "RANDOM()",                                 // The sort order
     	    "1"											// limit
     	    );
    
