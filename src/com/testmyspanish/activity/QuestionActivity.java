@@ -57,4 +57,8 @@ public class QuestionActivity extends Activity {
 		}
 	};
 
+	public void nextQuestion(View v) {
+		//TODO: Implement Next Question Activity
+	}
+
 }
