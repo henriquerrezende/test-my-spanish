@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -20,9 +22,12 @@ public class QuestionActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.question_layout);
 
+	    FeedQuestionDbHelper dbHelper = new FeedQuestionDbHelper(this);
+	    Question question= readFirstQuestion(dbHelper);
+
 	    // Create the text view
 	    TextView textView = (TextView) findViewById(R.id.question);
-	    textView.setText("Generate question here");
+	    textView.setText(question.getTitle());
 	    
 	    List<String> answer_options = new ArrayList<String>();
 	    answer_options.add("hello");
@@ -56,4 +61,39 @@ public class QuestionActivity extends Activity {
     	    textView.setText("Question answered!");
 		}
 	};
+	
+    private Question readFirstQuestion(FeedQuestionDbHelper dbHelper) {
+    	
+    	SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+    	// Define a projection that specifies which columns from the database
+    	// you will actually use after this query.
+    	String[] projection = {
+    	    FeedReaderContract.FeedQuestion._ID,
+    	    FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE,
+    	    FeedReaderContract.FeedQuestion.COLUMN_NAME_ANSWER_ID
+    	    };
+    	
+    	Cursor cursor = db.query(
+    	    FeedReaderContract.FeedQuestion.TABLE_NAME,  // The table to query
+    	    projection,                               // The columns to return
+    	    "",                                // The columns for the WHERE clause
+    	    null,                            // The values for the WHERE clause
+    	    null,                                     // don't group the rows
+    	    null,                                     // don't filter by row groups
+    	    null,                                 // The sort order
+    	    "1"											// limit
+    	    );
+   
+    	cursor.moveToFirst();
+
+    	String itemTitle = cursor.getString(
+        	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_TITLE)
+        	);
+    	int itemAnswerId = cursor.getInt(
+        	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_ANSWER_ID)
+        	);
+    	
+    	return new Question(itemTitle, itemAnswerId);
+    }
 }
