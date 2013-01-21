@@ -65,6 +65,13 @@ public class QuestionActivity extends Activity {
 				answerButton.setTextColor(Color.RED);
 				textView.setText("Question answered wrong!");
 			}
+
+		    RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answer_options_group);
+		    Integer radioButtonCount = answersOptionsGroup.getChildCount();
+
+		    for (int i=0; i<radioButtonCount; i++){
+		    	answersOptionsGroup.getChildAt(i).setEnabled(false);
+		    }
 		}
 	};
 
