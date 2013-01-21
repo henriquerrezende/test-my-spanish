@@ -17,12 +17,16 @@ import com.testmyspanish.model.Question;
 import com.testmyspanish.persistence.dao.QuestionDAO;
 
 public class QuestionActivity extends Activity {
+
+	private Long correctAnswerId;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.question_layout);
 
 	    Question question = QuestionDAO.readRandomQuestion();
+	    correctAnswerId = question.getCorrectAnswerId();
 
 	    // Create the text view
 	    TextView textView = (TextView) findViewById(R.id.question);
@@ -31,29 +35,36 @@ public class QuestionActivity extends Activity {
 	    RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answer_options_group);
 	    for(Answer answerOption : question.getAnswers()) {
 	    	RadioButton answerButton = new RadioButton(this);
+	    	answerButton.setId(answerOption.getId());
 	    	answerButton.setText(answerOption.getAnswer());
 	    	answerButton.setOnClickListener(answerButtonClickHandler);
 	    	answersOptionsGroup.addView(answerButton);
 	    }
 	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    private OnClickListener answerButtonClickHandler = new OnClickListener() {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private OnClickListener answerButtonClickHandler = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			RadioButton answerButton = (RadioButton) v;
-			answerButton.setTextColor(Color.BLUE);
 			TextView textView = (TextView) findViewById(R.id.question);
-    	    textView.setText("Question answered!");
+
+			RadioButton answerButton = (RadioButton) v;
+			if (Long.valueOf(answerButton.getId()) == correctAnswerId) {
+				answerButton.setTextColor(Color.GREEN);
+				textView.setText("Question answered correctly!");
+			} else {
+				answerButton.setTextColor(Color.RED);
+				textView.setText("Question answered wrong!");
+			}
 		}
 	};
 

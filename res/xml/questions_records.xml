@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <questions>
-    <question question="Dog?"   correctAnswerId="2" />
+    <question question="Dog?"   correctAnswerId="1" />
     <question question="Cat?"   correctAnswerId="2" />
     <question question="Mouse?" correctAnswerId="3" />
 </questions>

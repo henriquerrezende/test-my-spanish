@@ -6,10 +6,10 @@ import java.util.List;
 public class Question {
 	
 	private String question;
-	private Integer correctAnswerId;
+	private Long correctAnswerId;
 	private List<Answer> answers;
 	
-	public Question(String question, Integer answerId, List<Answer> answers) {
+	public Question(String question, Long answerId, List<Answer> answers) {
 		this.question = question;
 		this.correctAnswerId = answerId;
 		this.answers = answers;
@@ -17,6 +17,10 @@ public class Question {
 
 	public String getQuestion() {
 		return question;
+	}
+	
+	public Long getCorrectAnswerId() {
+		return correctAnswerId;
 	}
 	
 	public List<Answer> getAnswers() {

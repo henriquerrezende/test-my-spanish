@@ -38,9 +38,11 @@ public class AnswerDAO {
     	List<Answer> answers = new ArrayList<Answer>();
     	if (cursor.moveToNext()) {
     		do {
+    			Integer answerId = cursor.getInt(
+    	        	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedAnswer._ID));
     			String answerString = cursor.getString(
     					cursor.getColumnIndexOrThrow(FeedReaderContract.FeedAnswer.COLUMN_NAME_ANSWER)); 
-    			answers.add(new Answer(answerString));
+    			answers.add(new Answer(answerId, answerString));
     		} while (cursor.moveToNext());
 		  }
 		  if (cursor != null && !cursor.isClosed()) {

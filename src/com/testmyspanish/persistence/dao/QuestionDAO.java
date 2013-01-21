@@ -42,7 +42,7 @@ public class QuestionDAO {
     	String question = cursor.getString(
         	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_QUESTION)
         	);
-    	Integer answerId = cursor.getInt(
+    	Long answerId = cursor.getLong(
         	    cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID)
         	);
     	
