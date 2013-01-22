@@ -66,7 +66,11 @@ public class QuestionActivity extends Activity {
 				textView.setText("Question answered wrong!");
 			}
 
-		    RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answer_options_group);
+		    disableAnswerButtons();
+		}
+
+		private void disableAnswerButtons() {
+			RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answer_options_group);
 		    Integer radioButtonCount = answersOptionsGroup.getChildCount();
 
 		    for (int i=0; i<radioButtonCount; i++){
