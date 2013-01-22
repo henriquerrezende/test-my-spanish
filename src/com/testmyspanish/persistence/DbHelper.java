@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.testmyspanish.R;
 import com.testmyspanish.persistence.FeedReaderContract.FeedAnswer;
+import com.testmyspanish.persistence.FeedReaderContract.FeedExam;
 import com.testmyspanish.persistence.FeedReaderContract.FeedQuestion;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -24,6 +25,11 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String TAG = "DbHelper";
 	
 	private final Context fContext;
+
+	private static final String SQL_CREATE_EXAMS =
+			"CREATE TABLE " + FeedReaderContract.FeedExam.TABLE_NAME + " (" +
+					FeedReaderContract.FeedExam._ID + " INTEGER PRIMARY KEY," +
+					FeedReaderContract.FeedExam.COLUMN_NAME_NUMBER_OF_QUESTIONS + " INTEGER)";
 
 	private static final String SQL_CREATE_QUESTIONS =
 	    "CREATE TABLE " + FeedReaderContract.FeedQuestion.TABLE_NAME + " (" +
@@ -46,6 +52,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		fContext = context;
     }
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SQL_CREATE_EXAMS);
         db.execSQL(SQL_CREATE_QUESTIONS);
         db.execSQL(SQL_CREATE_ANSWERS);
         populate(db);
@@ -58,9 +65,11 @@ public class DbHelper extends SQLiteOpenHelper {
     }
     
     private void populate(SQLiteDatabase db) {
+    	populateExams(db);
     	populateQuestions(db);
     	populateAnswers(db);
     }
+
 	private void populateAnswers(SQLiteDatabase db) {
 		ContentValues values = new ContentValues();                            
         Resources res = fContext.getResources();
@@ -95,6 +104,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 		
 	}
+
 	private void populateQuestions(SQLiteDatabase db) {
         ContentValues values = new ContentValues();                            
         Resources res = fContext.getResources();
@@ -129,4 +139,34 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 	}
 
+	private void populateExams(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        Resources res = fContext.getResources();
+
+        XmlResourceParser xml = res.getXml(R.xml.exams_records);
+        try
+        {
+            int eventType = xml.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if ((eventType == XmlPullParser.START_TAG) &&(xml.getName().equals("exam"))){
+                	String numberOfQuestions = xml.getAttributeValue(null, FeedExam.COLUMN_NAME_NUMBER_OF_QUESTIONS);
+                    values.put(FeedExam.COLUMN_NAME_NUMBER_OF_QUESTIONS, numberOfQuestions);
+                    db.insert(FeedExam.TABLE_NAME, null, values);
+                }
+                eventType = xml.next();
+            }
+        }
+        catch (XmlPullParserException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        finally
+        {
+            xml.close();
+        }
+	}
 }
