@@ -1,5 +1,6 @@
 package com.testmyspanish.persistence.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
@@ -49,4 +50,47 @@ public class QuestionDAO {
     	List<Answer> answers = AnswerDAO.readAnswersForQuestion(questionId);
     	return new Question(question, answerId, answers);
     }
+
+	public static List<Question> readRandomQuestions(Integer numberOfQuestions) {
+		List<Question> questions = new ArrayList<Question>();
+		SQLiteDatabase db = MainActivity.DB_HELPER.getWritableDatabase();
+
+		// Define a projection that specifies which columns from the database
+		// you will actually use after this query.
+		String[] projection = {
+		    FeedReaderContract.FeedQuestion._ID,
+		    FeedReaderContract.FeedQuestion.COLUMN_NAME_QUESTION,
+		    FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID
+		    };
+
+		Cursor cursor = db.query(
+		    FeedReaderContract.FeedQuestion.TABLE_NAME,  // The table to query
+		    projection,                               // The columns to return
+		    "",                                // The columns for the WHERE clause
+		    null,                            // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    "RANDOM()",                                 // The sort order
+	        numberOfQuestions.toString()				// limit
+		    );
+
+	    if (cursor.moveToFirst()) {
+	        do {
+	        	Long questionId = cursor.getLong(
+	        			cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion._ID)
+	        			);
+	        	String question = cursor.getString(
+	        			cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_QUESTION)
+	        			);
+	        	Long answerId = cursor.getLong(
+	        			cursor.getColumnIndexOrThrow(FeedReaderContract.FeedQuestion.COLUMN_NAME_CORRECT_ANSWER_ID)
+	        			);
+
+	    		List<Answer> answers = AnswerDAO.readAnswersForQuestion(questionId);
+
+	    		questions.add(new Question(question, answerId, answers));
+	        } while (cursor.moveToNext());
+	    }
+		return questions;
+	}
 }
