@@ -10,7 +10,7 @@ import com.testmyspanish.R;
 import com.testmyspanish.persistence.DbHelper;
 
 public class MainActivity extends Activity {
-	
+
 	public static DbHelper DB_HELPER;
 
 	@Override
@@ -26,10 +26,10 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
-	
-    /** Called when the user clicks the Send button */
-    public void startTest(View view) {
-    	Intent intent = new Intent(this, QuestionActivity.class);
-        startActivity(intent);
-    }
+
+	/** Called when the user clicks the Send button */
+	public void startTest(View view) {
+		Intent intent = new Intent(this, ExamActivity.class);
+		startActivity(intent);
+	}
 }

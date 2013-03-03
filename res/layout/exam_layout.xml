@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <fragment
+        android:id="@+id/questionFragment"
+        android:name="com.testmyspanish.activity.QuestionFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4" />
+
+    <Button
+        android:id="@+id/nextQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.5"
+        android:background="@drawable/btn_custom"
+        android:height="60dp"
+        android:onClick="nextQuestion"
+        android:text="@string/next_question"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
