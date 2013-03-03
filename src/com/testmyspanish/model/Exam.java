@@ -2,19 +2,15 @@ package com.testmyspanish.model;
 
 import java.util.List;
 
+import com.testmyspanish.persistence.dao.QuestionDAO;
+
 public class Exam {
 	
-	private Integer id;
 	private Integer numberOfQuestions;
 	private List<Question> questions;
 	
 	public Exam(Integer numberOfQuestions) {
 		questions = fillQuestions(numberOfQuestions);
-	}
-
-	private List<Question> fillQuestions(Integer numberOfQuestions) {
-		//TODO: Implement this
-		throw new UnsupportedOperationException();
 	}
 
 	public Integer getNumberOfQuestions() {
@@ -25,8 +21,7 @@ public class Exam {
 		return questions;
 	}
 
-	public Integer getId() {
-		return id;
+	private List<Question> fillQuestions(Integer numberOfQuestions) {
+		return QuestionDAO.readRandomQuestions(numberOfQuestions);
 	}
-
 }
