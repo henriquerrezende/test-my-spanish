@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="16" />
 
     <application
@@ -26,6 +26,14 @@
 
         <activity
             android:name="com.testmyspanish.activity.ExamActivity"
+            android:parentActivityName="com.testmyspanish.activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.testmyspanish.activity.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.testmyspanish.activity.EndExamActivity"
             android:parentActivityName="com.testmyspanish.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

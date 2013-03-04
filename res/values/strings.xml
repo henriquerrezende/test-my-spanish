@@ -6,5 +6,6 @@
     <string name="menu_settings">Settings</string>
     <string name="question_title">Question</string>
     <string name="next_question">Next Question</string>
+    <string name="end_exam_message">Congratulations!</string>
     
 </resources>

@@ -1,6 +1,7 @@
 package com.testmyspanish.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -55,6 +56,14 @@ public class ExamActivity extends Activity {
 		    answerMessage = Toast.makeText(ExamActivity.this, "", Toast.LENGTH_SHORT);
 	    } else {
 	    	this.finish();
+
+	    	Bundle endBundle = new Bundle();
+	    	endBundle.putSerializable("exam", exam);
+
+			Intent intent = new Intent(this, EndExamActivity.class);
+			intent.putExtras(endBundle);
+
+			startActivity(intent);
 	    }
 	}
 
