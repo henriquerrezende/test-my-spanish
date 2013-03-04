@@ -7,7 +7,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.testmyspanish.R;
+import com.testmyspanish.model.Exam;
 import com.testmyspanish.persistence.DbHelper;
+import com.testmyspanish.persistence.dao.ExamDAO;
 
 public class MainActivity extends Activity {
 
@@ -29,6 +31,12 @@ public class MainActivity extends Activity {
 
 	public void startTest(View view) {
 		Intent intent = new Intent(this, ExamActivity.class);
+
+		Exam exam = ExamDAO.readRandomExam();
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("exam", exam);
+
+		intent.putExtras(bundle);
 		startActivity(intent);
 	}
 }

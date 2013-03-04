@@ -13,35 +13,46 @@ import android.widget.Toast;
 
 import com.testmyspanish.R;
 import com.testmyspanish.model.Answer;
+import com.testmyspanish.model.Exam;
 import com.testmyspanish.model.Question;
-import com.testmyspanish.persistence.dao.QuestionDAO;
 
 public class ExamActivity extends Activity {
 
+	private Exam exam;
 	private Long correctAnswerId;
 	private Toast answerMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null) {
+			exam = (Exam) bundle.getSerializable("exam");
+			getIntent().removeExtra("exam");
+		}
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.exam_layout);
 
-	    Question question = QuestionDAO.readRandomQuestion();
-	    correctAnswerId = question.getCorrectAnswerId();
+	    Question question = exam.consumeQuestion();
+	    if (question != null) {
+		    correctAnswerId = question.getCorrectAnswerId();
 
-	    TextView questionTextView = (TextView) findViewById(R.id.question);
-	    questionTextView.setText(question.getQuestion());
+		    TextView questionTextView = (TextView) findViewById(R.id.question);
+		    questionTextView.setText(question.getQuestion());
 
-	    RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answerOptionsGroup);
-	    for(Answer answerOption : question.getAnswers()) {
-			RadioButton answerButton = new RadioButton(this);
-			answerButton.setId(answerOption.getId());
-			answerButton.setText(answerOption.getAnswer());
-			answerButton.setOnClickListener(answerButtonClickHandler);
-			answersOptionsGroup.addView(answerButton);
+		    RadioGroup answersOptionsGroup = (RadioGroup) findViewById(R.id.answerOptionsGroup);
+		    for(Answer answerOption : question.getAnswers()) {
+				RadioButton answerButton = new RadioButton(this);
+				answerButton.setId(answerOption.getId());
+				answerButton.setText(answerOption.getAnswer());
+				answerButton.setOnClickListener(answerButtonClickHandler);
+				answersOptionsGroup.addView(answerButton);
+		    }
+
+		    answerMessage = Toast.makeText(ExamActivity.this, "", Toast.LENGTH_SHORT);
+	    } else {
+	    	this.finish();
 	    }
-
-	    answerMessage = Toast.makeText(ExamActivity.this, "", Toast.LENGTH_SHORT);
 	}
 
 	@Override
@@ -55,7 +66,7 @@ public class ExamActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			RadioButton answerButton = (RadioButton) v;
-			if (Long.valueOf(answerButton.getId()) == correctAnswerId) {
+			if (Long.valueOf(answerButton.getId()).equals(correctAnswerId)) {
 				answerButton.setTextColor(Color.GREEN);
 				answerMessage.setText("Question answered correctly!");
 				answerMessage.show();
