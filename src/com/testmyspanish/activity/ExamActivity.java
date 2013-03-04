@@ -33,6 +33,9 @@ public class ExamActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.exam_layout);
 
+		TextView scoreTextView = (TextView) findViewById(R.id.score);
+		scoreTextView.setText("Score: " + exam.getActualScore() + "/" + exam.getTotalScore());
+
 	    Question question = exam.consumeQuestion();
 	    if (question != null) {
 		    correctAnswerId = question.getCorrectAnswerId();
@@ -67,6 +70,10 @@ public class ExamActivity extends Activity {
 		public void onClick(View v) {
 			RadioButton answerButton = (RadioButton) v;
 			if (Long.valueOf(answerButton.getId()).equals(correctAnswerId)) {
+				exam.setActualScore(exam.getActualScore() + 1);
+				TextView scoreTextView = (TextView) findViewById(R.id.score);
+				scoreTextView.setText("Score: " + exam.getActualScore() + "/" + exam.getTotalScore());
+
 				answerButton.setTextColor(Color.GREEN);
 				answerMessage.setText("Question answered correctly!");
 				answerMessage.show();
